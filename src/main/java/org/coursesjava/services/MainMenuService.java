@@ -35,7 +35,7 @@ public class MainMenuService {
         System.out.print(Menu.ADD_USER_NICKNAME.getItem());
         String nickname = scanner.next();
 
-        System.out.println(Message.DATE_FORMAT.getMessage());
+        System.out.println(Tips.DATE_FORMAT.getPrompt());
         System.out.print(Menu.ADD_BIRTHDAY.getItem());
         String birthday = scanner.next();
 
