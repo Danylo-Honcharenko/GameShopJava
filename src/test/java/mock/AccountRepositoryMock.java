@@ -12,12 +12,12 @@ public class AccountRepositoryMock implements AccountRepository {
 
     @Override
     public int create(User user, String paymentSystem) {
-        Account check = new Account();
-        check.setId(10);
-        check.setAmount(0);
-        check.setType(paymentSystem);
-        check.setUser_id(user.getId());
-        accounts.add(check);
+        Account account = new Account();
+        account.setId(10);
+        account.setAmount(0);
+        account.setType(paymentSystem);
+        account.setUser_id(user.getId());
+        accounts.add(account);
         return 1;
     }
 
