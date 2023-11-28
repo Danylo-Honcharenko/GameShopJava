@@ -25,13 +25,13 @@ public class GameStoreMenu {
         while (logout) {
             System.out.println("Welcome " + LocalStorageService.get().getName() + "!");
             System.out.println("====");
-            System.out.println(Menu.GAME_LIST.getItem());
-            System.out.println(Menu.BUY_GAME.getItem());
-            System.out.println(Menu.TOP_UP_YOUR_ACCOUNT.getItem());
-            System.out.println(Menu.STATE_OF_AN_ACCOUNT.getItem());
-            System.out.println(Menu.USER_LIB.getItem());
-            System.out.println(Menu.LOGOUT.getItem());
-            System.out.print(Menu.ACTION.getItem());
+            System.out.println(Menu.GAME_LIST);
+            System.out.println(Menu.BUY_GAME);
+            System.out.println(Menu.TOP_UP_YOUR_ACCOUNT);
+            System.out.println(Menu.STATE_OF_AN_ACCOUNT);
+            System.out.println(Menu.USER_LIB);
+            System.out.println(Menu.LOGOUT);
+            System.out.print(Menu.ACTION);
 
             switch (scanner.next()) {
                 case "1" -> game.list();
@@ -40,7 +40,7 @@ public class GameStoreMenu {
                 case "4" -> account.stateOfAnAccount();
                 case "5" -> game.lib();
                 case "6" -> logout = false;
-                default -> System.out.println(Error.NO_EXIST.getMessage());
+                default -> System.out.println(Error.NO_EXIST);
             }
         }
     }

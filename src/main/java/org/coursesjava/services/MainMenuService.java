@@ -27,19 +27,19 @@ public class MainMenuService {
     }
 
     public void createUser() {
-        System.out.println(MenuTitle.CREATE_USER.getTitle());
+        System.out.println(MenuTitle.CREATE_USER);
 
-        System.out.print(Menu.ADD_USER_NAME.getItem());
+        System.out.print(Menu.ADD_USER_NAME);
         String name = scanner.next();
 
-        System.out.print(Menu.ADD_USER_NICKNAME.getItem());
+        System.out.print(Menu.ADD_USER_NICKNAME);
         String nickname = scanner.next();
 
-        System.out.println(Tips.DATE_FORMAT.getPrompt());
-        System.out.print(Menu.ADD_BIRTHDAY.getItem());
+        System.out.println(Tips.DATE_FORMAT);
+        System.out.print(Menu.ADD_BIRTHDAY);
         String birthday = scanner.next();
 
-        System.out.print(Menu.ADD_PASSWORD.getItem());
+        System.out.print(Menu.ADD_PASSWORD);
         String password = scanner.next();
 
         User candidate = new User();
@@ -60,29 +60,29 @@ public class MainMenuService {
          * **/
 
         if (user.create(candidate)) {
-            System.out.println(Message.USER_CREATE_SUCCESSFULLY.getMessage());
+            System.out.println(Message.USER_CREATE_SUCCESSFULLY);
 
-            System.out.println(Tips.ACCOUNT_REGISTRATION.getPrompt());
-            System.out.print(Menu.INDICATE_PAYMENT_SYSTEM.getItem());
+            System.out.println(Tips.ACCOUNT_REGISTRATION);
+            System.out.print(Menu.INDICATE_PAYMENT_SYSTEM);
             String paymentSystem = scanner.next();
 
             if (account.create(user.find(candidate), paymentSystem)) {
-                System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY.getMessage());
+                System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY);
             } else {
-                System.out.println(Error.NOT_CREATED_ACCOUNT.getMessage());
+                System.out.println(Error.NOT_CREATED_ACCOUNT);
             }
         } else {
-            System.out.println(Error.NOT_CREATED_USER.getMessage());
+            System.out.println(Error.NOT_CREATED_USER);
         }
     }
 
     public void login() {
-        System.out.println(MenuTitle.LOGIN.getTitle());
+        System.out.println(MenuTitle.LOGIN);
 
-        System.out.print(Menu.USER_NAME.getItem());
+        System.out.print(Menu.USER_NAME);
         String userName = scanner.next();
 
-        System.out.print(Menu.PASSWORD.getItem());
+        System.out.print(Menu.PASSWORD);
         String password = scanner.next();
 
         User user = new User();
@@ -95,7 +95,7 @@ public class MainMenuService {
             LocalStorageService.set(result);
             new GameStoreMenu(scanner).show();
         } else {
-            System.out.println(Error.USER_NOT_FOUND.getMessage());
+            System.out.println(Error.USER_NOT_FOUND);
         }
     }
 }

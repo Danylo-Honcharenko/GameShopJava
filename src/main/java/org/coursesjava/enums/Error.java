@@ -1,10 +1,8 @@
 package org.coursesjava.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public enum Error {
     NO_EXIST("This menu item does not exist!"),
     NOT_CREDITED("Money was not credited!"),
@@ -16,4 +14,10 @@ public enum Error {
     NOT_BUY_GAME("Error when purchasing a game!");
 
     private final String message;
+
+
+    @Override
+    public String toString() {
+        return message;
+    }
 }

@@ -1,10 +1,8 @@
 package org.coursesjava.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public enum Message {
     USER_CREATE_SUCCESSFULLY("User create successfully!"),
     ACCOUNT_CREATED_SUCCESSFULLY("Account created successfully!"),
@@ -12,4 +10,9 @@ public enum Message {
     GAME_BUY_SUCCESSFULLY("Game buy successfully!"),
     LIBRARY_IS_EMPTY("Your library is empty!");
     private final String message;
+
+    @Override
+    public String toString() {
+        return message;
+    }
 }

@@ -22,7 +22,7 @@ public class AccountMenuService {
     }
 
     public void topUpAccount() {
-        System.out.print(Menu.TOP_UP_ACCOUNT_Q.getItem());
+        System.out.print(Menu.TOP_UP_ACCOUNT_Q);
         int amount = Integer.parseInt(scanner.next());
         /**
          * from the local storage we get a copy of the current session user data,
@@ -37,7 +37,7 @@ public class AccountMenuService {
             // write the account change to local storage
             LocalStorageService.get().getAccount().setAmount(creditedAmount);
         } else {
-            System.out.println(Error.NOT_CREDITED.getMessage());
+            System.out.println(Error.NOT_CREDITED);
         }
     }
 

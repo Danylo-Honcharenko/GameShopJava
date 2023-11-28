@@ -27,20 +27,20 @@ public class GameStoreMenuService {
     }
 
     public void list() {
-        System.out.println(Message.ALL_GAME.getMessage());
+        System.out.println(Message.ALL_GAME);
         game.findAll().forEach(g -> System.out.println("Name: " + g.getName() + " " + "Release date: " + g.getRelease_date() + " " + "Rating: " + g.getRating() + " " + "Cost: " + g.getCost() + " " + "Description: " + g.getDescription()));
     }
 
     public void buy() {
         scanner.nextLine();
-        System.out.print(Menu.BUY_THE_GAME.getItem());
+        System.out.print(Menu.BUY_THE_GAME);
         String name = scanner.nextLine();
 
         // Looking for a game by name
         Game game = this.game.findByName(name);
         // If it is not there, we inform the user about it
         if (game == null) {
-            System.out.println(Error.GAME_NOT_FOUND.getMessage());
+            System.out.println(Error.GAME_NOT_FOUND);
             return;
         }
         // We get the cost of the game
@@ -48,7 +48,7 @@ public class GameStoreMenuService {
         int userBalance = LocalStorageService.get().getAccount().getAmount();
         // Check if the user has enough money to buy the game
         if(cost > userBalance) {
-            System.out.println(Error.NO_MONEY.getMessage());
+            System.out.println(Error.NO_MONEY);
             return;
         }
         // We make a request to purchase the game
@@ -57,9 +57,9 @@ public class GameStoreMenuService {
             LocalStorageService.get().getAccount().setAmount(userBalance - cost);
             // Now we update the balance in the database. We take the balance from local storage
             account.update(LocalStorageService.get().getAccount(), LocalStorageService.get().getAccount().getAmount());
-            System.out.println(Message.GAME_BUY_SUCCESSFULLY.getMessage());
+            System.out.println(Message.GAME_BUY_SUCCESSFULLY);
         } else {
-            System.out.println(Error.NOT_BUY_GAME.getMessage());
+            System.out.println(Error.NOT_BUY_GAME);
         }
     }
 
@@ -69,7 +69,7 @@ public class GameStoreMenuService {
         if (!game.userLib(LocalStorageService.get().getId()).isEmpty()) {
             game.userLib(LocalStorageService.get().getId()).forEach(g -> System.out.println(g.getName()));
         } else {
-            System.out.println(Message.LIBRARY_IS_EMPTY.getMessage());
+            System.out.println(Message.LIBRARY_IS_EMPTY);
         }
         System.out.println("+==============+");
     }

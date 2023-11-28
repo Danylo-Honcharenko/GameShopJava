@@ -15,11 +15,11 @@ public class Application {
         boolean exit = true;
 
         while (exit) {
-            System.out.println(MenuTitle.MAIN.getTitle());
-            System.out.println(Menu.CREATE_NEW_USER.getItem());
-            System.out.println(Menu.LOGIN.getItem());
-            System.out.println(Menu.EXIT.getItem());
-            System.out.print(Menu.ACTION.getItem());
+            System.out.println(MenuTitle.MAIN);
+            System.out.println(Menu.CREATE_NEW_USER);
+            System.out.println(Menu.LOGIN);
+            System.out.println(Menu.EXIT);
+            System.out.print(Menu.ACTION);
 
             switch (scanner.next()) {
                 case "1" -> menu.createUser();
@@ -32,7 +32,7 @@ public class Application {
                         System.err.println("Close connection error: " + ex.getMessage());
                     }
                 }
-                default -> System.out.println(Error.NO_EXIST.getMessage());
+                default -> System.out.println(Error.NO_EXIST);
             }
         }
 

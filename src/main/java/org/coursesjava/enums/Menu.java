@@ -1,9 +1,7 @@
 package org.coursesjava.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
 public enum Menu {
     CREATE_NEW_USER("1. Create new user"),
@@ -38,4 +36,9 @@ public enum Menu {
 
     BUY_THE_GAME("Enter the name of the game you want to buy: ");
     private final String item;
+
+    @Override
+    public String toString() {
+        return item;
+    }
 }
