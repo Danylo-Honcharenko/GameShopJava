@@ -73,13 +73,13 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public int remove(int ID) {
-        int rowsUpdate = 0;
+        int rowsChanged = 0;
         try (PreparedStatement query = connection.prepareStatement(delete)) {
             query.setInt(1, ID);
-            rowsUpdate = query.executeUpdate();
+            rowsChanged = query.executeUpdate();
         } catch (SQLException ex) {
             System.out.println("DB remove entry error: " + ex.getMessage());
         }
-        return rowsUpdate;
+        return rowsChanged;
     }
 }
