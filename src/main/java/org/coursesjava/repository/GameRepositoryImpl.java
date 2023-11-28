@@ -146,17 +146,16 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public List<Game> getUserGame(int userID) {
         List<Game> userGames = new ArrayList<>();
-        try (PreparedStatement query = connection.prepareStatement(getUserGame)) {
+        try (PreparedStatement query = connection.prepareStatement(getUserGame);
+             ResultSet data = query.executeQuery()) {
             query.setInt(1, userID);
-            try (ResultSet data = query.executeQuery()) {
-                while (data.next()) {
-                    Game game = new Game();
-                    game.setName(data.getString("G.name"));
-                    game.setRelease_date(data.getDate("release_date").toLocalDate());
-                    game.setRating(data.getInt("rating"));
-                    game.setDescription(data.getString("description"));
-                    userGames.add(game);
-                }
+            while (data.next()) {
+                Game game = new Game();
+                game.setName(data.getString("G.name"));
+                game.setRelease_date(data.getDate("release_date").toLocalDate());
+                game.setRating(data.getInt("rating"));
+                game.setDescription(data.getString("description"));
+                userGames.add(game);
             }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
