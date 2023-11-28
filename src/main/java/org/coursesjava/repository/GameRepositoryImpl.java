@@ -72,8 +72,8 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public List<Game> getAll() {
         List<Game> games = new ArrayList<>();
-        try (Statement query = connection.createStatement()) {
-            try (ResultSet data = query.executeQuery(getAll)) {
+        try (Statement query = connection.createStatement();
+             ResultSet data = query.executeQuery(getAll)) {
                 while (data.next()) {
                     Game gameData = new Game();
                     gameData.setId(data.getInt("ID"));
@@ -85,7 +85,6 @@ public class GameRepositoryImpl implements GameRepository {
 
                     games.add(gameData);
                 }
-            }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
             try {
@@ -100,19 +99,18 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public Game getById(int ID) {
         Game game = null;
-        try (PreparedStatement query = connection.prepareStatement(getById)) {
+        try (PreparedStatement query = connection.prepareStatement(getById);
+             ResultSet data = query.executeQuery()) {
             query.setInt(1, ID);
-            try (ResultSet data = query.executeQuery()) {
-                if (data.next()) {
-                    Game gameData = new Game();
-                    gameData.setId(data.getInt("ID"));
-                    gameData.setName(data.getString("name"));
-                    gameData.setRelease_date(data.getDate("release_date").toLocalDate());
-                    gameData.setRating(data.getInt("rating"));
-                    gameData.setCost(data.getInt("cost"));
-                    gameData.setDescription(data.getString("description"));
-                    game = gameData;
-                }
+            if (data.next()) {
+                Game gameData = new Game();
+                gameData.setId(data.getInt("ID"));
+                gameData.setName(data.getString("name"));
+                gameData.setRelease_date(data.getDate("release_date").toLocalDate());
+                gameData.setRating(data.getInt("rating"));
+                gameData.setCost(data.getInt("cost"));
+                gameData.setDescription(data.getString("description"));
+                game = gameData;
             }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
