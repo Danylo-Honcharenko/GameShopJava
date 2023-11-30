@@ -5,6 +5,7 @@ import org.coursesjava.repository.dao.GameRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GameRepositoryMock implements GameRepository {
     private final List<Game> games = new ArrayList<>();
@@ -13,11 +14,12 @@ public class GameRepositoryMock implements GameRepository {
         return 1;
     }
     @Override
-    public Game getByName(String Game) {
-        return games.stream()
-                .filter(g -> g.getName().equals(Game))
+    public Optional<Game> getByName(String findGame) {
+        Game game = games.stream()
+                .filter(g -> g.getName().equals(findGame))
                 .findFirst()
                 .orElse(null);
+        return Optional.ofNullable(game);
     }
 
     @Override
@@ -26,11 +28,12 @@ public class GameRepositoryMock implements GameRepository {
     }
 
     @Override
-    public Game getById(int ID) {
-        return games.stream()
+    public Optional<Game> getById(int ID) {
+        Game game = games.stream()
                 .filter(g -> g.getId() == ID)
                 .findFirst()
                 .orElse(null);
+        return Optional.ofNullable(game);
     }
 
     @Override

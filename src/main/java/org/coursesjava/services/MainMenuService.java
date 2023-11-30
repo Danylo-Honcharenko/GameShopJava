@@ -9,6 +9,7 @@ import org.coursesjava.repository.AccountRepositoryImpl;
 import org.coursesjava.repository.UserRepositoryImpl;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class MainMenuService {
@@ -66,7 +67,12 @@ public class MainMenuService {
             System.out.print(Menu.INDICATE_PAYMENT_SYSTEM);
             String paymentSystem = scanner.next();
 
-            if (account.create(user.find(candidate), paymentSystem)) {
+            if (user.find(candidate).isEmpty()) {
+                System.out.println(Error.USER_NOT_FOUND);
+                return;
+            }
+
+            if (account.create(user.find(candidate).get(), paymentSystem)) {
                 System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY);
             } else {
                 System.out.println(Error.NOT_CREATED_ACCOUNT);
@@ -89,10 +95,10 @@ public class MainMenuService {
         user.setName(userName);
         user.setPassword(password);
 
-        User result = this.user.find(user);
+        Optional<User> result = this.user.find(user);
 
-        if (result != null) {
-            LocalStorageService.set(result);
+        if (result.isPresent()) {
+            LocalStorageService.set(result.get());
             new GameStoreMenu(scanner).show();
         } else {
             System.out.println(Error.USER_NOT_FOUND);

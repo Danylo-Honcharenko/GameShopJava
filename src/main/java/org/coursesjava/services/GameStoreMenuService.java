@@ -9,6 +9,7 @@ import org.coursesjava.repository.AccountRepositoryImpl;
 import org.coursesjava.repository.GameRepositoryImpl;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class GameStoreMenuService {
@@ -37,24 +38,28 @@ public class GameStoreMenuService {
         String name = scanner.nextLine();
 
         // Looking for a game by name
-        Game game = this.game.findByName(name);
+        Optional<Game> game = this.game.findByName(name);
         // If it is not there, we inform the user about it
-        if (game == null) {
+        if (game.isEmpty()) {
             System.out.println(Error.GAME_NOT_FOUND);
             return;
         }
         // We get the cost of the game
-        int cost = game.getCost();
-        int userBalance = LocalStorageService.get().getAccount().getAmount();
+        int cost = game.get().getCost();
+        int userBalance = LocalStorageService.get()
+                .getAccount()
+                .getAmount();
         // Check if the user has enough money to buy the game
         if(cost > userBalance) {
             System.out.println(Error.NO_MONEY);
             return;
         }
         // We make a request to purchase the game
-        if (this.game.buy(LocalStorageService.get().getId(), game.getId())) {
+        if (this.game.buy(LocalStorageService.get().getId(), game.get().getId())) {
             // Update the user's balance in local storage
-            LocalStorageService.get().getAccount().setAmount(userBalance - cost);
+            LocalStorageService.get()
+                    .getAccount()
+                    .setAmount(userBalance - cost);
             // Now we update the balance in the database. We take the balance from local storage
             account.update(LocalStorageService.get().getAccount(), LocalStorageService.get().getAccount().getAmount());
             System.out.println(Message.GAME_BUY_SUCCESSFULLY);

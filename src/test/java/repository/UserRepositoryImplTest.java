@@ -33,8 +33,9 @@ public class UserRepositoryImplTest {
 
         // created user
         Assert.assertEquals(1, this.user.create(user));
+        Assert.assertTrue(this.user.get(user).isPresent());
         // clear database
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).getId()));
+        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
     }
 
     @Test
@@ -49,14 +50,15 @@ public class UserRepositoryImplTest {
         Assert.assertEquals(1, user.create(expected));
         Assert.assertEquals(1, account.create(expected, "Visa"));
 
-        int ID = user.get(expected).getId();
+        Assert.assertTrue(user.get(expected).isPresent());
+        int ID = user.get(expected).get().getId();
         // set the ID to the expected object received from the database and the account
         expected.setId(ID);
-        expected.setAccount(user.get(expected).getAccount());
+        expected.setAccount(user.get(expected).get().getAccount());
         // get the user object and compare it with the expected object
-        Assert.assertEquals(expected, user.get(expected));
+        Assert.assertEquals(expected, user.get(expected).get());
         // clear database
-        Assert.assertEquals(1, account.remove(user.get(expected).getId()));
+        Assert.assertEquals(1, account.remove(user.get(expected).get().getId()));
         Assert.assertEquals(1, user.remove(ID));
     }
 
@@ -72,6 +74,7 @@ public class UserRepositoryImplTest {
         Assert.assertEquals(1, this.user.create(user));
         // get user id
         // remove user
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).getId()));
+        Assert.assertTrue(this.user.get(user).isPresent());
+        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
     }
 }

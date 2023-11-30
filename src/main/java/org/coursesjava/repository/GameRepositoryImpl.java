@@ -7,6 +7,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GameRepositoryImpl implements GameRepository {
     private final Connection connection;
@@ -42,7 +43,7 @@ public class GameRepositoryImpl implements GameRepository {
             """;
 
     @Override
-    public Game getByName(String GAME) {
+    public Optional<Game> getByName(String GAME) {
         Game game = null;
         try (PreparedStatement query = connection.prepareStatement(getByName)) {
             query.setString(1, GAME);
@@ -66,14 +67,14 @@ public class GameRepositoryImpl implements GameRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return game;
+        return Optional.ofNullable(game);
     }
 
     @Override
     public List<Game> getAll() {
         List<Game> games = new ArrayList<>();
-        try (Statement query = connection.createStatement();
-             ResultSet data = query.executeQuery(getAll)) {
+        try (Statement query = connection.createStatement()) {
+            try (ResultSet data = query.executeQuery(getAll)) {
                 while (data.next()) {
                     Game gameData = new Game();
                     gameData.setId(data.getInt("ID"));
@@ -85,6 +86,7 @@ public class GameRepositoryImpl implements GameRepository {
 
                     games.add(gameData);
                 }
+            }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
             try {
@@ -97,20 +99,21 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Game getById(int ID) {
+    public Optional<Game> getById(int ID) {
         Game game = null;
-        try (PreparedStatement query = connection.prepareStatement(getById);
-             ResultSet data = query.executeQuery()) {
+        try (PreparedStatement query = connection.prepareStatement(getById)) {
             query.setInt(1, ID);
-            if (data.next()) {
-                Game gameData = new Game();
-                gameData.setId(data.getInt("ID"));
-                gameData.setName(data.getString("name"));
-                gameData.setRelease_date(data.getDate("release_date").toLocalDate());
-                gameData.setRating(data.getInt("rating"));
-                gameData.setCost(data.getInt("cost"));
-                gameData.setDescription(data.getString("description"));
-                game = gameData;
+            try (ResultSet data = query.executeQuery()) {
+                if (data.next()) {
+                    Game gameData = new Game();
+                    gameData.setId(data.getInt("ID"));
+                    gameData.setName(data.getString("name"));
+                    gameData.setRelease_date(data.getDate("release_date").toLocalDate());
+                    gameData.setRating(data.getInt("rating"));
+                    gameData.setCost(data.getInt("cost"));
+                    gameData.setDescription(data.getString("description"));
+                    game = gameData;
+                }
             }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
@@ -120,7 +123,7 @@ public class GameRepositoryImpl implements GameRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return game;
+        return Optional.ofNullable(game);
     }
 
     @Override
@@ -144,16 +147,17 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public List<Game> getUserGame(int userID) {
         List<Game> userGames = new ArrayList<>();
-        try (PreparedStatement query = connection.prepareStatement(getUserGame);
-             ResultSet data = query.executeQuery()) {
+        try (PreparedStatement query = connection.prepareStatement(getUserGame)) {
             query.setInt(1, userID);
-            while (data.next()) {
-                Game game = new Game();
-                game.setName(data.getString("G.name"));
-                game.setRelease_date(data.getDate("release_date").toLocalDate());
-                game.setRating(data.getInt("rating"));
-                game.setDescription(data.getString("description"));
-                userGames.add(game);
+            try (ResultSet data = query.executeQuery()) {
+                while (data.next()) {
+                    Game game = new Game();
+                    game.setName(data.getString("G.name"));
+                    game.setRelease_date(data.getDate("release_date").toLocalDate());
+                    game.setRating(data.getInt("rating"));
+                    game.setDescription(data.getString("description"));
+                    userGames.add(game);
+                }
             }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());

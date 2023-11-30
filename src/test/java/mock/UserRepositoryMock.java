@@ -5,6 +5,7 @@ import org.coursesjava.repository.dao.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserRepositoryMock implements UserRepository {
     private final List<User> users = new ArrayList<>();
@@ -16,11 +17,12 @@ public class UserRepositoryMock implements UserRepository {
     }
 
     @Override
-    public User get(User user) {
-        return users.stream()
+    public Optional<User> get(User user) {
+        User findUser = users.stream()
                 .filter(u -> u.getName().equals(user.getName()) && u.getPassword().equals(user.getPassword()))
                 .findFirst()
                 .orElse(null);
+        return Optional.ofNullable(findUser);
     }
 
     @Override

@@ -2,6 +2,8 @@ package org.coursesjava.services;
 import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.UserRepository;
 
+import java.util.Optional;
+
 
 public class UserService {
 
@@ -11,13 +13,12 @@ public class UserService {
         this.user = user;
     }
 
-
     public boolean create(User user) {
         // if true user created if false no
         return this.user.create(user) == 1;
     }
 
-    public User find(User user) {
+    public Optional<User> find(User user) {
         return this.user.get(user);
     }
 }

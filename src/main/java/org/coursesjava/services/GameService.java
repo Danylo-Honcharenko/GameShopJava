@@ -4,6 +4,7 @@ import org.coursesjava.model.Game;
 import org.coursesjava.repository.dao.GameRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GameService {
     private final GameRepository game;
@@ -16,7 +17,7 @@ public class GameService {
         return 1;
     }
 
-    public Game findByName(String name) {
+    public Optional<Game> findByName(String name) {
         return game.getByName(name);
     }
 
@@ -24,7 +25,7 @@ public class GameService {
         return game.getAll();
     }
 
-    public Game findById(int ID) {
+    public Optional<Game> findById(int ID) {
         return game.getById(ID);
     }
 

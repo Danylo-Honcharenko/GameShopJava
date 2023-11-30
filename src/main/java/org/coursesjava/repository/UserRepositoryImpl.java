@@ -5,6 +5,7 @@ import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.UserRepository;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepository {
 
@@ -51,27 +52,28 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User get(User user) {
+    public Optional<User> get(User user) {
         User result = null;
-        try (PreparedStatement query = connection.prepareStatement(find);
-             ResultSet data = query.executeQuery()) {
+        try (PreparedStatement query = connection.prepareStatement(find)) {
             query.setString(1, user.getName());
             query.setString(2, user.getPassword());
-            while (data.next()) {
-                Account account = new Account();
-                account.setId(data.getInt("A.ID"));
-                account.setAmount(data.getInt("amount"));
-                account.setType(data.getString("type"));
-                account.setUser_id(data.getInt("user_id"));
+            try (ResultSet data = query.executeQuery()) {
+                while (data.next()) {
+                    Account account = new Account();
+                    account.setId(data.getInt("A.ID"));
+                    account.setAmount(data.getInt("amount"));
+                    account.setType(data.getString("type"));
+                    account.setUser_id(data.getInt("user_id"));
 
-                User userData = new User();
-                userData.setId(data.getInt("U.ID"));
-                userData.setName(data.getString("name"));
-                userData.setPassword(data.getString("password"));
-                userData.setNickname(data.getString("nickname"));
-                userData.setBirthday(data.getString("birthday"));
-                userData.setAccount(account);
-                result = userData;
+                    User userData = new User();
+                    userData.setId(data.getInt("U.ID"));
+                    userData.setName(data.getString("name"));
+                    userData.setPassword(data.getString("password"));
+                    userData.setNickname(data.getString("nickname"));
+                    userData.setBirthday(data.getString("birthday"));
+                    userData.setAccount(account);
+                    result = userData;
+                }
             }
         } catch (SQLException ex) {
             System.err.println("DB find user error: " + ex.getMessage());
@@ -81,7 +83,7 @@ public class UserRepositoryImpl implements UserRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     @Override

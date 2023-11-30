@@ -28,10 +28,11 @@ public class GameRepositoryImplTest {
         expected.setName("Red Dead Redemption 2");
         expected.setRelease_date(LocalDate.of(2018, 10, 26));
         expected.setRating((int) 9.8);
-        expected.setCost(80000000);
+        expected.setCost(500);
         expected.setDescription("Action-adventure game developed and published by Rockstar Games.");
 
-        Assert.assertEquals(expected, this.game.getByName("Red Dead Redemption 2"));
+        Assert.assertTrue(this.game.getByName("Red Dead Redemption 2").isPresent());
+        Assert.assertEquals(expected, this.game.getByName("Red Dead Redemption 2").get());
     }
 
     @Test
@@ -43,7 +44,7 @@ public class GameRepositoryImplTest {
         firstGame.setName("The Witcher 3: Wild Hunt");
         firstGame.setRelease_date(LocalDate.of(2015, 5, 19));
         firstGame.setRating((int) 9.7);
-        firstGame.setCost(60000000);
+        firstGame.setCost(300);
         firstGame.setDescription("Action role-playing game developed and published by CD Projekt.");
 
         Game secondGame = new Game();
@@ -51,7 +52,7 @@ public class GameRepositoryImplTest {
         secondGame.setName("Red Dead Redemption 2");
         secondGame.setRelease_date(LocalDate.of(2018, 10, 26));
         secondGame.setRating((int) 9.8);
-        secondGame.setCost(80000000);
+        secondGame.setCost(500);
         secondGame.setDescription("Action-adventure game developed and published by Rockstar Games.");
 
         expected.add(firstGame);
@@ -67,10 +68,11 @@ public class GameRepositoryImplTest {
         expected.setName("The Witcher 3: Wild Hunt");
         expected.setRelease_date(LocalDate.of(2015, 5, 19));
         expected.setRating((int) 9.7);
-        expected.setCost(60000000);
+        expected.setCost(300);
         expected.setDescription("Action role-playing game developed and published by CD Projekt.");
 
-        Assert.assertEquals(expected, this.game.getById(1));
+        Assert.assertTrue(this.game.getById(1).isPresent());
+        Assert.assertEquals(expected, this.game.getById(1).get());
     }
 
     @Test

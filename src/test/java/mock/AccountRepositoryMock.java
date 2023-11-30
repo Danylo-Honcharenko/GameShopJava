@@ -27,7 +27,6 @@ public class AccountRepositoryMock implements AccountRepository {
         accounts.set(0, account);
         return 1;
     }
-
     @Override
     public Account get(int ID) {
         return accounts.stream()

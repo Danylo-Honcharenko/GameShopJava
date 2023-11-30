@@ -9,9 +9,9 @@ public interface GameRepository {
     default int create(Game game) {
         return 0;
     }
-    Game getByName(String Game);
+    Optional<Game> getByName(String Game);
     List<Game> getAll();
-    Game getById(int ID);
+    Optional<Game> getById(int ID);
     int buy(int userID, int gameID);
     List<Game> getUserGame(int userID);
 }

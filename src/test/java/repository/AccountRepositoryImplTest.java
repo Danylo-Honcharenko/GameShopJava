@@ -32,11 +32,12 @@ public class AccountRepositoryImplTest {
 
         // created user
         Assert.assertEquals(1, this.user.create(user));
+        Assert.assertTrue(this.user.get(user).isPresent());
         // created account
-        Assert.assertEquals(1, account.create(this.user.get(user), "Mastercard"));
+        Assert.assertEquals(1, account.create(this.user.get(user).get(), "Mastercard"));
         // clear database
-        Assert.assertEquals(1, account.remove(this.user.get(user).getAccount().getId()));
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).getId()));
+        Assert.assertEquals(1, account.remove(this.user.get(user).get().getAccount().getId()));
+        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
     }
 
     @Test
@@ -49,17 +50,18 @@ public class AccountRepositoryImplTest {
 
         // created user
         Assert.assertEquals(1, this.user.create(user));
+        Assert.assertTrue(this.user.get(user).isPresent());
         // created account
-        Assert.assertEquals(1, account.create(this.user.get(user), "Visa"));
+        Assert.assertEquals(1, account.create(this.user.get(user).get(), "Visa"));
         // the default amount of money in the user's account is 0, let's check it out
-        Assert.assertEquals(0, this.user.get(user).getAccount().getAmount());
+        Assert.assertEquals(0, this.user.get(user).get().getAccount().getAmount());
         // topped up your account with $200
-        Assert.assertEquals(1, account.update(this.user.get(user).getAccount(), 200));
+        Assert.assertEquals(1, account.update(this.user.get(user).get().getAccount(), 200));
         // let's check it out
-        Assert.assertEquals(200, this.user.get(user).getAccount().getAmount());
+        Assert.assertEquals(200, this.user.get(user).get().getAccount().getAmount());
         // clear database
-        Assert.assertEquals(1, account.remove(this.user.get(user).getAccount().getId()));
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).getId()));
+        Assert.assertEquals(1, account.remove(this.user.get(user).get().getAccount().getId()));
+        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
     }
 
     @Test
@@ -72,10 +74,11 @@ public class AccountRepositoryImplTest {
 
         // created user
         Assert.assertEquals(1, this.user.create(user));
+        Assert.assertTrue(this.user.get(user).isPresent());
         // created account
-        Assert.assertEquals(1, account.create(this.user.get(user), "Visa"));
+        Assert.assertEquals(1, account.create(this.user.get(user).get(), "Visa"));
         // clear database
-        Assert.assertEquals(1, account.remove(this.user.get(user).getAccount().getId()));
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).getId()));
+        Assert.assertEquals(1, account.remove(this.user.get(user).get().getAccount().getId()));
+        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
     }
 }

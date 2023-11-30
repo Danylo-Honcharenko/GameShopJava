@@ -55,6 +55,7 @@ public class UserServiceTest {
         actual.setName("Dima");
         actual.setPassword("123456789");
 
-        Assert.assertEquals(expected, userService.find(actual));
+        Assert.assertTrue(userService.find(actual).isPresent());
+        Assert.assertEquals(expected, userService.find(actual).get());
     }
 }

@@ -45,7 +45,8 @@ public class GameServiceTest {
         expected.setDescription("Test, test");
         expected.setRelease_date(LocalDate.of(2013, 6, 12));
 
-        Assert.assertEquals(expected, this.game.findByName("Doom"));
+        Assert.assertTrue(this.game.findByName("Gta 5").isPresent());
+        Assert.assertEquals(expected, this.game.findByName("Gta 5").get());
     }
 
     @Test
@@ -84,6 +85,7 @@ public class GameServiceTest {
         expected.setDescription("Test, test");
         expected.setRelease_date(LocalDate.of(2000, 8, 10));
 
-        Assert.assertEquals(expected, this.game.findById(1));
+        Assert.assertTrue(this.game.findById(1).isPresent());
+        Assert.assertEquals(expected, this.game.findById(1).get());
     }
 }
