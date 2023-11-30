@@ -4,19 +4,13 @@ import org.coursesjava.model.Account;
 import org.coursesjava.model.User;
 import org.coursesjava.services.AccountService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.mockito.ArgumentMatchers.*;
 
 public class AccountServiceTest {
-    private AccountService accountService;
-
-    @Before
-    public void init() {
-        accountService = Mockito.mock(AccountService.class);
-    }
+    private final AccountService accountService = Mockito.mock(AccountService.class);;
 
     @Test
     public void create() {

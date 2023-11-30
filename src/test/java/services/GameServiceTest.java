@@ -3,7 +3,6 @@ package services;
 import org.coursesjava.model.Game;
 import org.coursesjava.services.GameService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -16,12 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
 public class GameServiceTest {
-    private GameService game;
-
-    @Before
-    public void init() {
-        game = Mockito.mock(GameService.class);
-    }
+    private final GameService game = Mockito.mock(GameService.class);
 
     @Test
     public void getByName() {

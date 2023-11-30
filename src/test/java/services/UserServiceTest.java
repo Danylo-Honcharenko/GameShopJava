@@ -15,12 +15,7 @@ import static org.mockito.ArgumentMatchers.notNull;
 
 public class UserServiceTest {
 
-    private UserService userService;
-
-    @Before
-    public void init() {
-        userService = Mockito.mock(UserService.class);
-    }
+    private final UserService userService = Mockito.mock(UserService.class);
 
     @Test
     public void create() {
