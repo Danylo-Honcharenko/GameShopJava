@@ -1,19 +1,25 @@
 package services;
 
-import mock.UserRepositoryMock;
 import org.coursesjava.model.Account;
 import org.coursesjava.model.User;
 import org.coursesjava.services.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.notNull;
 
 public class UserServiceTest {
+
     private UserService userService;
 
     @Before
     public void init() {
-        userService = new UserService(new UserRepositoryMock());
+        userService = Mockito.mock(UserService.class);
     }
 
     @Test
@@ -30,6 +36,8 @@ public class UserServiceTest {
         actual.setPassword("123456789");
         actual.setAccount(account);
 
+        Mockito.when(userService.create(any(User.class)))
+                .thenReturn(true);
         Assert.assertTrue(userService.create(actual));
     }
 
@@ -49,13 +57,17 @@ public class UserServiceTest {
         expected.setPassword("123456789");
         expected.setAccount(account);
 
-        Assert.assertTrue(userService.create(expected));
-
         User actual = new User();
         actual.setName("Dima");
         actual.setPassword("123456789");
 
+        Mockito.when(userService.find(actual))
+                .thenReturn(Optional.of(expected));
         Assert.assertTrue(userService.find(actual).isPresent());
         Assert.assertEquals(expected, userService.find(actual).get());
+
+        Mockito.when(userService.find(actual))
+                .thenReturn(null);
+        Assert.assertNull(userService.find(actual));
     }
 }

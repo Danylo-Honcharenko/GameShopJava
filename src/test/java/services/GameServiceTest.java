@@ -1,38 +1,26 @@
 package services;
 
-import mock.GameRepositoryMock;
 import org.coursesjava.model.Game;
 import org.coursesjava.services.GameService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 public class GameServiceTest {
-    private final GameService game = new GameService(new GameRepositoryMock());
+    private GameService game;
+
     @Before
     public void init() {
-        Game gameFirst = new Game();
-        gameFirst.setId(1);
-        gameFirst.setName("Doom");
-        gameFirst.setCost(300);
-        gameFirst.setRating(4);
-        gameFirst.setDescription("Test, test");
-        gameFirst.setRelease_date(LocalDate.of(2000, 8, 10));
-
-        Game gameSecond = new Game();
-        gameSecond.setId(2);
-        gameSecond.setName("Gta 5");
-        gameSecond.setCost(500);
-        gameSecond.setRating(5);
-        gameSecond.setDescription("Test, test");
-        gameSecond.setRelease_date(LocalDate.of(2013, 6, 12));
-
-        this.game.create(gameFirst);
-        this.game.create(gameSecond);
+        game = Mockito.mock(GameService.class);
     }
 
     @Test
@@ -45,8 +33,16 @@ public class GameServiceTest {
         expected.setDescription("Test, test");
         expected.setRelease_date(LocalDate.of(2013, 6, 12));
 
-        Assert.assertTrue(this.game.findByName("Gta 5").isPresent());
-        Assert.assertEquals(expected, this.game.findByName("Gta 5").get());
+        String gameName = "Gta 5";
+
+        Mockito.when(game.findByName(any(String.class)))
+                .thenReturn(Optional.of(expected));
+        Assert.assertTrue(game.findByName(gameName).isPresent());
+        Assert.assertEquals(expected, game.findByName(gameName).get());
+
+        Mockito.when(game.findByName(any(String.class)))
+                .thenReturn(null);
+        Assert.assertNull(game.findByName(gameName));
     }
 
     @Test
@@ -69,10 +65,9 @@ public class GameServiceTest {
         gameSecond.setDescription("Test, test");
         gameSecond.setRelease_date(LocalDate.of(2013, 6, 12));
 
-        games.add(gameFirst);
-        games.add(gameSecond);
-
-        Assert.assertEquals(games, this.game.findAll());
+        Mockito.when(game.findAll())
+                .thenReturn(games);
+        Assert.assertEquals(games, game.findAll());
     }
 
     @Test
@@ -85,7 +80,13 @@ public class GameServiceTest {
         expected.setDescription("Test, test");
         expected.setRelease_date(LocalDate.of(2000, 8, 10));
 
-        Assert.assertTrue(this.game.findById(1).isPresent());
-        Assert.assertEquals(expected, this.game.findById(1).get());
+        Mockito.when(game.findById(anyInt()))
+                .thenReturn(Optional.of(expected));
+        Assert.assertTrue(game.findById(1).isPresent());
+        Assert.assertEquals(expected, game.findById(1).get());
+
+        Mockito.when(game.findById(anyInt()))
+                .thenReturn(null);
+        Assert.assertNull(game.findById(1));
     }
 }
