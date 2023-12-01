@@ -4,14 +4,12 @@ import org.coursesjava.model.Account;
 import org.coursesjava.model.User;
 import org.coursesjava.services.UserService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.notNull;
 
 public class UserServiceTest {
 

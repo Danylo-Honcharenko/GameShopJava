@@ -46,17 +46,4 @@ public class AccountServiceTest {
                 .thenReturn(true);
         Assert.assertTrue(accountService.update(account, 100));
     }
-
-    @Test
-    public void get() {
-        Account expected = new Account();
-        expected.setId(10);
-        expected.setAmount(0);
-        expected.setType("Visa");
-        expected.setUser_id(0);
-
-        Mockito.when(accountService.getAmount(anyInt()))
-                .thenReturn(expected);
-        Assert.assertEquals(expected, accountService.getAmount(10));
-    }
 }

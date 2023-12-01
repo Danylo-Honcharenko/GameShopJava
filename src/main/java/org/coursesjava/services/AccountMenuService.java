@@ -35,7 +35,9 @@ public class AccountMenuService {
         if (account.update(LocalStorageService.get().getAccount(), creditedAmount)) {
             System.out.println("Your account has been successfully replenished with the amount " + creditedAmount + "$");
             // write the account change to local storage
-            LocalStorageService.get().getAccount().setAmount(creditedAmount);
+            LocalStorageService.get()
+                    .getAccount()
+                    .setAmount(creditedAmount);
         } else {
             System.out.println(Error.NOT_CREDITED);
         }

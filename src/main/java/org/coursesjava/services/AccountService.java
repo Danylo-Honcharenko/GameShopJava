@@ -19,10 +19,6 @@ public class AccountService {
         return this.account.update(account, amount) > 0;
     }
 
-    public Account getAmount(final int ID) {
-        return account.get(ID);
-    }
-
     public boolean remove(final int ID) {
         return account.remove(ID) > 0;
     }

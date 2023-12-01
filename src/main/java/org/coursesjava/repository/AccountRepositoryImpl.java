@@ -67,11 +67,6 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account get(int ID) {
-        return null;
-    }
-
-    @Override
     public int remove(int ID) {
         int rowsChanged = 0;
         try (PreparedStatement query = connection.prepareStatement(delete)) {
