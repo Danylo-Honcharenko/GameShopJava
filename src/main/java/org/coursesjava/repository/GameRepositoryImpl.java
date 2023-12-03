@@ -3,7 +3,7 @@ package org.coursesjava.repository;
 import org.coursesjava.model.Game;
 import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.GameRepository;
-import org.coursesjava.services.TemporaryGameStorage;
+import org.coursesjava.service.TemporaryGameStorage;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,37 +17,11 @@ public class GameRepositoryImpl implements GameRepository {
         this.connection = connection;
     }
 
-    private String getByName =
-            """
-            SELECT * FROM Game WHERE name = ?;
-            """;
-
-    private String getById =
-            """
-            SELECT * FROM Game WHERE ID = ?;
-            """;
-
-    private String getAll =
-            """
-            SELECT * FROM Game;
-            """;
-
-    private String gameBelongs =
-            """
-            INSERT INTO User_game (user_id, game_id) VALUES (?, ?);
-            """;
-
-    private String getUserGame =
-            """
-            SELECT U.name, password, nickname, birthday, G.name, release_date, rating, cost, description 
-            FROM Users AS U LEFT JOIN User_game GR ON U.ID = GR.user_id JOIN Game G ON G.ID = GR.game_id WHERE U.ID = ?;
-            """;
-
     @Override
-    public Optional<Game> getByName(String desiredGame) {
+    public Optional<Game> getByName(String name) {
         Game game = null;
-        try (PreparedStatement query = connection.prepareStatement(getByName)) {
-            query.setString(1, desiredGame);
+        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM Game WHERE name = ?;")) {
+            query.setString(1, name);
             try (ResultSet data = query.executeQuery()) {
                 if (data.next()) {
                     Game gameData = new Game();
@@ -69,7 +43,7 @@ public class GameRepositoryImpl implements GameRepository {
     public List<Game> getAll() {
         List<Game> games = new ArrayList<>();
         try (Statement query = connection.createStatement()) {
-            try (ResultSet data = query.executeQuery(getAll)) {
+            try (ResultSet data = query.executeQuery("SELECT * FROM Game;")) {
                 while (data.next()) {
                     Game gameData = new Game();
                     games.add(new TemporaryGameStorage().data(gameData, data));
@@ -89,7 +63,7 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public Optional<Game> getById(int id) {
         Game game = null;
-        try (PreparedStatement query = connection.prepareStatement(getById)) {
+        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM Game WHERE ID = ?;")) {
             query.setInt(1, id);
             try (ResultSet data = query.executeQuery()) {
                 if (data.next()) {
@@ -109,15 +83,15 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Optional<Game> addGameToUser(User user, Game game) {
+    public Optional<Game> addGameToUser(int userId, int gameId) {
         Game gameResult = null;
-        try (PreparedStatement query = connection.prepareStatement(gameBelongs)) {
-            if (getById(game.getId()).isPresent()) {
-                query.setInt(1, user.getId());
-                query.setInt(2, game.getId());
+        try (PreparedStatement query = connection.prepareStatement("INSERT INTO User_game (user_id, game_id) VALUES (?, ?);")) {
+            if (getById(gameId).isPresent()) {
+                query.setInt(1, userId);
+                query.setInt(2, gameId);
                 query.executeUpdate();
 
-                gameResult = getById(game.getId()).get();
+                gameResult = getById(gameId).get();
             }
         } catch (SQLException ex) {
             System.err.println("DB game error: " + ex.getMessage());
@@ -131,9 +105,9 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public List<Game> getUserGame(int userId) {
+    public List<Game> getGamesByUser(int userId) {
         List<Game> userGames = new ArrayList<>();
-        try (PreparedStatement query = connection.prepareStatement(getUserGame)) {
+        try (PreparedStatement query = connection.prepareStatement("SELECT U.name, password, nickname, birthday, G.name, release_date, rating, cost, description FROM Users AS U LEFT JOIN User_game GR ON U.ID = GR.user_id JOIN Game G ON G.ID = GR.game_id WHERE U.ID = ?;")) {
             query.setInt(1, userId);
             try (ResultSet data = query.executeQuery()) {
                 while (data.next()) {

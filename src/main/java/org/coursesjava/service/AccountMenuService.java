@@ -1,6 +1,6 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 
-import org.coursesjava.config.ConnectionSingleton;
+import org.coursesjava.config.ConnectionConfig;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.repository.AccountRepositoryImpl;
@@ -15,7 +15,7 @@ public class AccountMenuService {
     public AccountMenuService(Scanner scanner) {
         this.scanner = scanner;
         try {
-            this.account = new AccountService(new AccountRepositoryImpl(ConnectionSingleton.getConnection()));
+            this.account = new AccountService(new AccountRepositoryImpl(ConnectionConfig.getConnection()));
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -24,10 +24,10 @@ public class AccountMenuService {
     public void topUpAccount() {
         System.out.print(Menu.TOP_UP_ACCOUNT_Q);
         int amount = scanner.nextInt();
-        /**
-         * from the local storage we get a copy of the current session user data,
-         * get the amount and perform the sum operation on the new desired amount and current
-         * **/
+        /*
+        * from the local storage we get a copy of the current session user data,
+        * get the amount and perform the sum operation on the new desired amount and current
+        */
         int creditedAmount = amount + LocalStorageService.get()
                 .getAccount()
                 .getAmount();

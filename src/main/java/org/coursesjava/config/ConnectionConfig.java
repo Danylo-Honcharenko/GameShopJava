@@ -4,12 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionSingleton {
+public class ConnectionConfig {
     private static Connection connection;
     private static final String USER = "root";
     private static final String PASSWORD = "123456789";
 
-    private ConnectionSingleton() {}
+    private ConnectionConfig() {}
 
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {

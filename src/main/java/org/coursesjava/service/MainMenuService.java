@@ -1,6 +1,6 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 
-import org.coursesjava.config.ConnectionSingleton;
+import org.coursesjava.config.ConnectionConfig;
 import org.coursesjava.GameStoreMenu;
 import org.coursesjava.enums.*;
 import org.coursesjava.enums.Error;
@@ -15,14 +15,14 @@ import java.util.Scanner;
 
 public class MainMenuService {
     private final Scanner scanner;
-    private UserService user;
-    private AccountService account;
+    private UserService userService;
+    private AccountService accountService;
     public MainMenuService(Scanner scanner) {
         this.scanner = scanner;
 
         try {
-            this.user = new UserService(new UserRepositoryImpl(ConnectionSingleton.getConnection()));
-            this.account = new AccountService(new AccountRepositoryImpl(ConnectionSingleton.getConnection()));
+            this.userService = new UserService(new UserRepositoryImpl(ConnectionConfig.getConnection()));
+            this.accountService = new AccountService(new AccountRepositoryImpl(ConnectionConfig.getConnection()));
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -50,38 +50,15 @@ public class MainMenuService {
         candidate.setBirthday(birthday);
         candidate.setPassword(password);
 
-        /**
-         * User schema (Java)
-         * =====
-         * id: id
-         * name: name
-         * nickname: nickname
-         * birthday: birthday
-         * password: password
-         * account: [id: id, amount: amount, type: type, user_id: user_id]
-         * **/
+        Optional<User> createUser = userService.create(candidate);
 
-        if (user.create(candidate).isPresent()) {
+        if (createUser.isPresent()) {
             System.out.println(Message.USER_CREATE_SUCCESSFULLY);
-
-            System.out.println(Tips.ACCOUNT_REGISTRATION);
-            System.out.print(Menu.INDICATE_PAYMENT_SYSTEM);
-            String paymentSystem = scanner.next();
-
-            if (user.find(candidate).isEmpty()) {
+            if (userService.findByNameAndPassword(name, password).isEmpty()) {
                 System.out.println(Error.USER_NOT_FOUND);
                 return;
             }
-
-            Account account = new Account();
-            account.setUserId(user.find(candidate).get().getId());
-            account.setCardType(paymentSystem);
-
-            if (this.account.create(account).isPresent()) {
-                System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY);
-            } else {
-                System.out.println(Error.NOT_CREATED_ACCOUNT);
-            }
+            createAccount(createUser.get().getId());
         } else {
             System.out.println(Error.NOT_CREATED_USER);
         }
@@ -96,17 +73,29 @@ public class MainMenuService {
         System.out.print(Menu.PASSWORD);
         String password = scanner.next();
 
-        User user = new User();
-        user.setName(userName);
-        user.setPassword(password);
-
-        Optional<User> result = this.user.find(user);
+        Optional<User> result = userService.findByNameAndPassword(userName, password);
 
         if (result.isPresent()) {
             LocalStorageService.set(result.get());
             new GameStoreMenu(scanner).show();
         } else {
             System.out.println(Error.USER_NOT_FOUND);
+        }
+    }
+
+    private void createAccount(int userId) {
+        System.out.println(Tips.ACCOUNT_REGISTRATION);
+        System.out.print(Menu.INDICATE_PAYMENT_SYSTEM);
+        String paymentSystem = scanner.next();
+
+        Account account = new Account();
+        account.setUserId(userId);
+        account.setCardType(paymentSystem);
+
+        if (accountService.create(account).isPresent()) {
+            System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY);
+        } else {
+            System.out.println(Error.NOT_CREATED_ACCOUNT);
         }
     }
 }

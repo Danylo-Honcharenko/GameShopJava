@@ -1,4 +1,4 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 
 import org.coursesjava.model.Account;
 import org.coursesjava.repository.dao.AccountRepository;

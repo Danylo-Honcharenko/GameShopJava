@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface UserRepository {
     Optional<User> create(User candidate);
-    Optional<User> get(User user);
+    Optional<User> getByNameAndPassword(String name, String password);
 }

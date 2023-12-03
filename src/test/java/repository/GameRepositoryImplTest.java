@@ -71,11 +71,6 @@ public class GameRepositoryImplTest {
 
     @Test
     public void buy() {
-        User user = new User();
-        user.setId(1);
-        Game game = new Game();
-        game.setId(4);
-
-        Assert.assertTrue(this.game.addGameToUser(user, game).isPresent());
+        Assert.assertTrue(game.addGameToUser(1, 4).isPresent());
     }
 }

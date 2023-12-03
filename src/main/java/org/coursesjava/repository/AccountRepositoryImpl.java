@@ -7,26 +7,17 @@ import java.sql.*;
 import java.util.Optional;
 
 public class AccountRepositoryImpl implements AccountRepository {
-    private Connection connection;
+    private final Connection connection;
 
     public AccountRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
 
-    private String create =
-            """
-            INSERT INTO Accounts (type, user_id) VALUES (?, ?);
-            """;
-
-    private String update =
-            """
-            UPDATE Accounts SET amount = ? WHERE ID = ?;
-            """;
-
     @Override
     public Optional<Account> create(Account account) {
         Account accountResult = null;
-        try (PreparedStatement query = connection.prepareStatement(create, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement query = connection.prepareStatement("INSERT INTO Accounts (type, user_id) VALUES (?, ?);",
+                Statement.RETURN_GENERATED_KEYS)) {
             query.setString(1, account.getCardType());
             query.setInt(2, account.getUserId());
             query.executeUpdate();
@@ -49,7 +40,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public Optional<Account> update(Account account, int amount) {
         Account accountUpdate = null;
-        try (PreparedStatement query = connection.prepareStatement(update)) {
+        try (PreparedStatement query = connection.prepareStatement(" UPDATE Accounts SET amount = ? WHERE ID = ?;")) {
             query.setInt(1, amount);
             query.setInt(2, account.getId());
             if (query.executeUpdate() > 0) {

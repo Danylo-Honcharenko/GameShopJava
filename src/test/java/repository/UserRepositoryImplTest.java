@@ -40,10 +40,6 @@ public class UserRepositoryImplTest {
 
     @Test
     public void get() {
-        User actual = new User();
-        actual.setName("Dima");
-        actual.setPassword("123456789");
-
-        Assert.assertTrue(user.get(actual).isPresent());
+        Assert.assertTrue(user.getByNameAndPassword("Dima", "123456789").isPresent());
     }
 }

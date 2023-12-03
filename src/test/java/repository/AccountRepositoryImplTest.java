@@ -1,13 +1,9 @@
 package repository;
 
 import config.MysqlConnector;
-import org.coursesjava.config.ConnectionSingleton;
 import org.coursesjava.model.Account;
-import org.coursesjava.model.User;
 import org.coursesjava.repository.AccountRepositoryImpl;
-import org.coursesjava.repository.UserRepositoryImpl;
 import org.coursesjava.repository.dao.AccountRepository;
-import org.coursesjava.repository.dao.UserRepository;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

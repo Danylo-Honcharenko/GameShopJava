@@ -1,4 +1,4 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.UserRepository;
 
@@ -13,7 +13,7 @@ public class UserService {
     public Optional<User> create(User user) {
         return repository.create(user);
     }
-    public Optional<User> find(User user) {
-        return repository.get(user);
+    public Optional<User> findByNameAndPassword(String name, String password) {
+        return repository.getByNameAndPassword(name, password);
     }
 }

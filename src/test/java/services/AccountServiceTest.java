@@ -1,7 +1,7 @@
 package services;
 
 import org.coursesjava.model.Account;
-import org.coursesjava.services.AccountService;
+import org.coursesjava.service.AccountService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;

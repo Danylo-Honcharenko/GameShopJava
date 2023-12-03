@@ -1,7 +1,7 @@
 package services;
 
 import org.coursesjava.model.Game;
-import org.coursesjava.services.GameService;
+import org.coursesjava.service.GameService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 
 public class GameServiceTest {
     private final GameService game = Mockito.mock(GameService.class);
@@ -29,12 +28,12 @@ public class GameServiceTest {
 
         String gameName = "Gta 5";
 
-        Mockito.when(game.findByName(any(String.class)))
+        Mockito.when(game.findByName(anyString()))
                 .thenReturn(Optional.of(expected));
         Assert.assertTrue(game.findByName(gameName).isPresent());
         Assert.assertEquals(expected, game.findByName(gameName).get());
 
-        Mockito.when(game.findByName(any(String.class)))
+        Mockito.when(game.findByName(anyString()))
                 .thenReturn(null);
         Assert.assertNull(game.findByName(gameName));
     }

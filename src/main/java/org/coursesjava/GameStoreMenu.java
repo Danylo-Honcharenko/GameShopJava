@@ -2,10 +2,9 @@ package org.coursesjava;
 
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
-import org.coursesjava.enums.MenuTitle;
-import org.coursesjava.services.AccountMenuService;
-import org.coursesjava.services.GameStoreMenuService;
-import org.coursesjava.services.LocalStorageService;
+import org.coursesjava.service.AccountMenuService;
+import org.coursesjava.service.GameStoreMenuService;
+import org.coursesjava.service.LocalStorageService;
 
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 
 import org.coursesjava.model.Game;
 import org.coursesjava.model.User;
@@ -21,10 +21,10 @@ public class GameService {
     public Optional<Game> findById(int id) {
         return repository.getById(id);
     }
-    public Optional<Game> buy(User user, Game game) {
-        return repository.addGameToUser(user, game);
+    public Optional<Game> buy(int userId, int gameId) {
+        return repository.addGameToUser(userId, gameId);
     }
     public List<Game> userLib(int userId) {
-        return repository.getUserGame(userId);
+        return repository.getGamesByUser(userId);
     }
 }

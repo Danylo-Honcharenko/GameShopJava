@@ -1,10 +1,10 @@
 package org.coursesjava;
 
-import org.coursesjava.config.ConnectionSingleton;
+import org.coursesjava.config.ConnectionConfig;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.enums.MenuTitle;
-import org.coursesjava.services.MainMenuService;
+import org.coursesjava.service.MainMenuService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -28,7 +28,7 @@ public class Application {
                 case "3" -> {
                     exit = false;
                     try {
-                        ConnectionSingleton.getConnection().close();
+                        ConnectionConfig.getConnection().close();
                     } catch (SQLException ex) {
                         System.err.println("Close connection error: " + ex.getMessage());
                     }

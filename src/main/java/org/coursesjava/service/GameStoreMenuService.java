@@ -1,6 +1,6 @@
-package org.coursesjava.services;
+package org.coursesjava.service;
 
-import org.coursesjava.config.ConnectionSingleton;
+import org.coursesjava.config.ConnectionConfig;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.enums.Message;
@@ -14,14 +14,14 @@ import java.util.Scanner;
 
 public class GameStoreMenuService {
     private final Scanner scanner;
-    private GameService game;
-    private AccountService account;
+    private GameService gameService;
+    private AccountService accountService;
 
     public GameStoreMenuService(Scanner scanner) {
         this.scanner = scanner;
         try {
-            this.game = new GameService(new GameRepositoryImpl(ConnectionSingleton.getConnection()));
-            this.account = new AccountService(new AccountRepositoryImpl(ConnectionSingleton.getConnection()));
+            this.gameService = new GameService(new GameRepositoryImpl(ConnectionConfig.getConnection()));
+            this.accountService = new AccountService(new AccountRepositoryImpl(ConnectionConfig.getConnection()));
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -29,7 +29,7 @@ public class GameStoreMenuService {
 
     public void list() {
         System.out.println(Message.ALL_GAME);
-        game.findAll().forEach(g -> System.out.println("Name: " + g.getName() + " " + "Release date: " + g.getReleaseDate() + " " + "Rating: " + g.getRating() + " " + "Cost: " + g.getCost() + " " + "Description: " + g.getDescription()));
+        gameService.findAll().forEach(g -> System.out.println("Name: " + g.getName() + " " + "Release date: " + g.getReleaseDate() + " " + "Rating: " + g.getRating() + " " + "Cost: " + g.getCost() + " " + "Description: " + g.getDescription()));
     }
 
     public void buy() {
@@ -38,7 +38,7 @@ public class GameStoreMenuService {
         String name = scanner.nextLine();
 
         // Looking for a game by name
-        Optional<Game> game = this.game.findByName(name);
+        Optional<Game> game = gameService.findByName(name);
         // If it is not there, we inform the user about it
         if (game.isEmpty()) {
             System.out.println(Error.GAME_NOT_FOUND);
@@ -55,13 +55,12 @@ public class GameStoreMenuService {
             return;
         }
         // We make a request to purchase the game
-        if (this.game.buy(LocalStorageService.get(), game.get()).isPresent()) {
-            // Update the user's balance in local storage
+        if (this.gameService.buy(LocalStorageService.get().getId(), game.get().getId()).isPresent()) {
             LocalStorageService.get()
                     .getAccount()
                     .setAmount(userBalance - cost);
-            // Now we update the balance in the database. We take the balance from local storage
-            account.update(LocalStorageService.get().getAccount(), LocalStorageService.get().getAccount().getAmount());
+
+            accountService.update(LocalStorageService.get().getAccount(), LocalStorageService.get().getAccount().getAmount());
             System.out.println(Message.GAME_BUY_SUCCESSFULLY);
         } else {
             System.out.println(Error.NOT_BUY_GAME);
@@ -71,8 +70,8 @@ public class GameStoreMenuService {
     public void lib() {
         System.out.println("+==============+");
         // We check whether the user has purchased games
-        if (!game.userLib(LocalStorageService.get().getId()).isEmpty()) {
-            game.userLib(LocalStorageService.get().getId()).forEach(g -> System.out.println(g.getName()));
+        if (!gameService.userLib(LocalStorageService.get().getId()).isEmpty()) {
+            gameService.userLib(LocalStorageService.get().getId()).forEach(g -> System.out.println(g.getName()));
         } else {
             System.out.println(Message.LIBRARY_IS_EMPTY);
         }

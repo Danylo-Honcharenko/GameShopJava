@@ -11,16 +11,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final Connection connection;
 
-    private String add =
-            """
-            INSERT INTO Users (name, password, nickname, birthday) VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));
-            """;
-
-    private String find =
-            """
-            SELECT * FROM Users AS U LEFT JOIN Accounts A ON U.ID = A.user_id WHERE U.name = ? AND U.password = ?;
-            """;
-
     public UserRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
@@ -28,7 +18,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> create(User candidate) {
         User user = null;
-        try (PreparedStatement query = connection.prepareStatement(add, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement query = connection.prepareStatement("INSERT INTO Users (name, password, nickname, birthday) VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));",
+                Statement.RETURN_GENERATED_KEYS)) {
             query.setString(1, candidate.getName());
             query.setString(2, candidate.getPassword());
             query.setString(3, candidate.getNickname());
@@ -52,11 +43,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> get(User user) {
+    public Optional<User> getByNameAndPassword(String name, String password) {
         User result = null;
-        try (PreparedStatement query = connection.prepareStatement(find)) {
-            query.setString(1, user.getName());
-            query.setString(2, user.getPassword());
+        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM Users AS U LEFT JOIN Accounts A ON U.ID = A.user_id WHERE U.name = ? AND U.password = ?;")) {
+            query.setString(1, name);
+            query.setString(2, password);
             try (ResultSet data = query.executeQuery()) {
                 while (data.next()) {
                     Account account = new Account();
