@@ -1,4 +1,4 @@
-package org.coursesjava;
+package org.coursesjava.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

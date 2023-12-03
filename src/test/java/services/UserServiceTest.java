@@ -18,9 +18,16 @@ public class UserServiceTest {
     @Test
     public void create() {
         Account account = new Account();
-        account.setUser_id(1);
+        account.setUserId(1);
         account.setAmount(0);
-        account.setType("Visa");
+        account.setCardType("Visa");
+
+        User expected = new User();
+        expected.setName("Dima");
+        expected.setNickname("Ethra");
+        expected.setBirthday("2002-10-21");
+        expected.setPassword("123456789");
+        expected.setAccount(account);
 
         User actual = new User();
         actual.setName("Dima");
@@ -30,17 +37,21 @@ public class UserServiceTest {
         actual.setAccount(account);
 
         Mockito.when(userService.create(any(User.class)))
-                .thenReturn(true);
-        Assert.assertTrue(userService.create(actual));
+                .thenReturn(Optional.of(actual));
+        Assert.assertTrue(userService.create(actual).isPresent());
+        Assert.assertEquals(expected, userService.create(actual).get());
+        Mockito.when(userService.create(any(User.class)))
+                .thenReturn(null);
+        Assert.assertNull(userService.create(expected));
     }
 
     @Test
     public void get() {
         Account account = new Account();
         account.setId(1);
-        account.setUser_id(1);
+        account.setUserId(1);
         account.setAmount(0);
-        account.setType("Visa");
+        account.setCardType("Visa");
 
         User expected = new User();
         expected.setId(1);

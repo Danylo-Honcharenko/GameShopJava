@@ -11,19 +11,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final Connection connection;
 
-    private final String add =
+    private String add =
             """
-            INSERT INTO Users (name, password, nickname, birthday) VALUE (?, ?, ?,STR_TO_DATE(?, '%Y-%m-%d'));
+            INSERT INTO Users (name, password, nickname, birthday) VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));
             """;
 
-    private final String find =
+    private String find =
             """
             SELECT * FROM Users AS U LEFT JOIN Accounts A ON U.ID = A.user_id WHERE U.name = ? AND U.password = ?;
-            """;
-
-    private final String delete =
-            """
-            DELETE FROM Users WHERE ID = ?;
             """;
 
     public UserRepositoryImpl(Connection connection) {
@@ -31,15 +26,20 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public int create(User user) {
-        int rowsChanged = 0;
-        try (PreparedStatement query = connection.prepareStatement(add)) {
-            query.setString(1, user.getName());
-            query.setString(2, user.getPassword());
-            query.setString(3, user.getNickname());
-            query.setDate(4, Date.valueOf(user.getBirthday()));
-            rowsChanged = query.executeUpdate();
+    public Optional<User> create(User candidate) {
+        User user = null;
+        try (PreparedStatement query = connection.prepareStatement(add, Statement.RETURN_GENERATED_KEYS)) {
+            query.setString(1, candidate.getName());
+            query.setString(2, candidate.getPassword());
+            query.setString(3, candidate.getNickname());
+            query.setDate(4, Date.valueOf(candidate.getBirthday()));
 
+            query.executeUpdate();
+
+            ResultSet generationKey = query.getGeneratedKeys();
+            generationKey.next();
+            candidate.setId(generationKey.getInt(1));
+            user = candidate;
         } catch (SQLException ex) {
             System.err.println("DB save error: " + ex.getMessage());
             try {
@@ -48,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return rowsChanged;
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -62,8 +62,8 @@ public class UserRepositoryImpl implements UserRepository {
                     Account account = new Account();
                     account.setId(data.getInt("A.ID"));
                     account.setAmount(data.getInt("amount"));
-                    account.setType(data.getString("type"));
-                    account.setUser_id(data.getInt("user_id"));
+                    account.setCardType(data.getString("type"));
+                    account.setUserId(data.getInt("user_id"));
 
                     User userData = new User();
                     userData.setId(data.getInt("U.ID"));
@@ -84,17 +84,5 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }
         return Optional.ofNullable(result);
-    }
-
-    @Override
-    public int remove(final int ID) {
-        int delete = 0;
-        try (PreparedStatement query = connection.prepareStatement(this.delete)) {
-            query.setInt(1, ID);
-            delete = query.executeUpdate();
-        } catch (SQLException ex) {
-            System.err.println("DB remove error: " + ex.getMessage());
-        }
-        return delete;
     }
 }

@@ -5,7 +5,6 @@ import org.coursesjava.model.User;
 import java.util.Optional;
 
 public interface UserRepository {
-    int create(User user);
+    Optional<User> create(User candidate);
     Optional<User> get(User user);
-    int remove(final int ID);
 }

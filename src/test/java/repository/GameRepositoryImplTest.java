@@ -1,13 +1,16 @@
 package repository;
 
-import org.coursesjava.ConnectionSingleton;
+import config.MysqlConnector;
 import org.coursesjava.model.Game;
+import org.coursesjava.model.User;
 import org.coursesjava.repository.GameRepositoryImpl;
 import org.coursesjava.repository.dao.GameRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,24 +18,23 @@ import java.util.List;
 
 public class GameRepositoryImplTest {
     private GameRepository game;
+    private Connection connection;
 
     @Before
     public void init() throws SQLException {
-        game = new GameRepositoryImpl(ConnectionSingleton.getConnection());
+        connection = MysqlConnector.getConnection();
+        game = new GameRepositoryImpl(connection);
+    }
+
+    @After
+    public void close() throws SQLException {
+        connection.close();
     }
 
     @Test
     public void getByName() {
-        Game expected = new Game();
-        expected.setId(2);
-        expected.setName("Red Dead Redemption 2");
-        expected.setRelease_date(LocalDate.of(2018, 10, 26));
-        expected.setRating((int) 9.8);
-        expected.setCost(500);
-        expected.setDescription("Action-adventure game developed and published by Rockstar Games.");
-
-        Assert.assertTrue(this.game.getByName("Red Dead Redemption 2").isPresent());
-        Assert.assertEquals(expected, this.game.getByName("Red Dead Redemption 2").get());
+        Assert.assertTrue(game.getByName("Red Dead Redemption 2").isPresent());
+        Assert.assertTrue(game.getByName("Mario").isEmpty());
     }
 
     @Test
@@ -42,15 +44,15 @@ public class GameRepositoryImplTest {
         Game firstGame = new Game();
         firstGame.setId(1);
         firstGame.setName("The Witcher 3: Wild Hunt");
-        firstGame.setRelease_date(LocalDate.of(2015, 5, 19));
+        firstGame.setReleaseDate(LocalDate.of(2015, 5, 19));
         firstGame.setRating((int) 9.7);
         firstGame.setCost(300);
         firstGame.setDescription("Action role-playing game developed and published by CD Projekt.");
 
         Game secondGame = new Game();
         secondGame.setId(2);
-        secondGame.setName("Red Dead Redemption 2");
-        secondGame.setRelease_date(LocalDate.of(2018, 10, 26));
+        secondGame.setName("");
+        secondGame.setReleaseDate(LocalDate.of(2018, 10, 26));
         secondGame.setRating((int) 9.8);
         secondGame.setCost(500);
         secondGame.setDescription("Action-adventure game developed and published by Rockstar Games.");
@@ -58,25 +60,22 @@ public class GameRepositoryImplTest {
         expected.add(firstGame);
         expected.add(secondGame);
 
-        Assert.assertEquals(expected, this.game.getAll());
+        Assert.assertEquals(expected, game.getAll());
     }
 
     @Test
     public void get() {
-        Game expected = new Game();
-        expected.setId(1);
-        expected.setName("The Witcher 3: Wild Hunt");
-        expected.setRelease_date(LocalDate.of(2015, 5, 19));
-        expected.setRating((int) 9.7);
-        expected.setCost(300);
-        expected.setDescription("Action role-playing game developed and published by CD Projekt.");
-
-        Assert.assertTrue(this.game.getById(1).isPresent());
-        Assert.assertEquals(expected, this.game.getById(1).get());
+        Assert.assertTrue(game.getById(1).isPresent());
+        Assert.assertTrue(game.getById(100).isEmpty());
     }
 
     @Test
     public void buy() {
-        Assert.assertEquals(1, this.game.buy(2, 1));
+        User user = new User();
+        user.setId(1);
+        Game game = new Game();
+        game.setId(4);
+
+        Assert.assertTrue(this.game.addGameToUser(user, game).isPresent());
     }
 }

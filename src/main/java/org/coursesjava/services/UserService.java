@@ -6,19 +6,14 @@ import java.util.Optional;
 
 
 public class UserService {
-
-    private final UserRepository user;
-
+    private final UserRepository repository;
     public UserService(UserRepository user) {
-        this.user = user;
+        repository = user;
     }
-
-    public boolean create(User user) {
-        // if true user created if false no
-        return this.user.create(user) == 1;
+    public Optional<User> create(User user) {
+        return repository.create(user);
     }
-
     public Optional<User> find(User user) {
-        return this.user.get(user);
+        return repository.get(user);
     }
 }

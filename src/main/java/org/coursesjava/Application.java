@@ -1,5 +1,6 @@
 package org.coursesjava;
 
+import org.coursesjava.config.ConnectionSingleton;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.enums.MenuTitle;

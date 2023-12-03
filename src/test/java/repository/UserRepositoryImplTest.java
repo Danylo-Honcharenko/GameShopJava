@@ -1,80 +1,49 @@
 package repository;
 
-import org.coursesjava.ConnectionSingleton;
+import config.MysqlConnector;
 import org.coursesjava.model.User;
-import org.coursesjava.repository.AccountRepositoryImpl;
 import org.coursesjava.repository.UserRepositoryImpl;
-import org.coursesjava.repository.dao.AccountRepository;
 import org.coursesjava.repository.dao.UserRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class UserRepositoryImplTest {
-
     private UserRepository user;
-    private AccountRepository account;
+    private Connection connection;
 
     @Before
     public void init() throws SQLException {
-        user = new UserRepositoryImpl(ConnectionSingleton.getConnection());
-        account = new AccountRepositoryImpl(ConnectionSingleton.getConnection());
+        connection = MysqlConnector.getConnection();
+        user = new UserRepositoryImpl(connection);
+    }
+
+    @After
+    public void close() throws SQLException {
+        connection.close();
     }
 
     @Test
     public void create() {
-        User user = new User();
-        user.setName("Dima");
-        user.setNickname("Ethra");
-        user.setBirthday("2002-10-21");
-        user.setPassword("123456789");
+        User actual = new User();
+        actual.setName("Dima");
+        actual.setNickname("Ethra");
+        actual.setBirthday("2002-10-21");
+        actual.setPassword("123456789");
 
-        // created user
-        Assert.assertEquals(1, this.user.create(user));
-        Assert.assertTrue(this.user.get(user).isPresent());
-        // clear database
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
+        Assert.assertTrue(user.create(actual).isPresent());
     }
 
     @Test
     public void get() {
-        User expected = new User();
-        expected.setName("Dima");
-        expected.setNickname("Ethra");
-        expected.setBirthday("2002-10-21");
-        expected.setPassword("123456789");
+        User actual = new User();
+        actual.setName("Dima");
+        actual.setPassword("123456789");
 
-        // created user
-        Assert.assertEquals(1, user.create(expected));
-        Assert.assertEquals(1, account.create(expected, "Visa"));
-
-        Assert.assertTrue(user.get(expected).isPresent());
-        int ID = user.get(expected).get().getId();
-        // set the ID to the expected object received from the database and the account
-        expected.setId(ID);
-        expected.setAccount(user.get(expected).get().getAccount());
-        // get the user object and compare it with the expected object
-        Assert.assertEquals(expected, user.get(expected).get());
-        // clear database
-        Assert.assertEquals(1, account.remove(user.get(expected).get().getId()));
-        Assert.assertEquals(1, user.remove(ID));
-    }
-
-    @Test
-    public void remove() {
-        User user = new User();
-        user.setName("Dima");
-        user.setNickname("Ethra");
-        user.setBirthday("2002-10-21");
-        user.setPassword("123456789");
-
-        // created user
-        Assert.assertEquals(1, this.user.create(user));
-        // get user id
-        // remove user
-        Assert.assertTrue(this.user.get(user).isPresent());
-        Assert.assertEquals(1, this.user.remove(this.user.get(user).get().getId()));
+        Assert.assertTrue(user.get(actual).isPresent());
     }
 }

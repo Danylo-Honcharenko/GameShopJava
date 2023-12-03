@@ -1,9 +1,10 @@
 package org.coursesjava.services;
 
-import org.coursesjava.ConnectionSingleton;
+import org.coursesjava.config.ConnectionSingleton;
 import org.coursesjava.GameStoreMenu;
 import org.coursesjava.enums.*;
 import org.coursesjava.enums.Error;
+import org.coursesjava.model.Account;
 import org.coursesjava.model.User;
 import org.coursesjava.repository.AccountRepositoryImpl;
 import org.coursesjava.repository.UserRepositoryImpl;
@@ -60,7 +61,7 @@ public class MainMenuService {
          * account: [id: id, amount: amount, type: type, user_id: user_id]
          * **/
 
-        if (user.create(candidate)) {
+        if (user.create(candidate).isPresent()) {
             System.out.println(Message.USER_CREATE_SUCCESSFULLY);
 
             System.out.println(Tips.ACCOUNT_REGISTRATION);
@@ -72,7 +73,11 @@ public class MainMenuService {
                 return;
             }
 
-            if (account.create(user.find(candidate).get(), paymentSystem)) {
+            Account account = new Account();
+            account.setUserId(user.find(candidate).get().getId());
+            account.setCardType(paymentSystem);
+
+            if (this.account.create(account).isPresent()) {
                 System.out.println(Message.ACCOUNT_CREATED_SUCCESSFULLY);
             } else {
                 System.out.println(Error.NOT_CREATED_ACCOUNT);

@@ -1,6 +1,6 @@
 package org.coursesjava.services;
 
-import org.coursesjava.ConnectionSingleton;
+import org.coursesjava.config.ConnectionSingleton;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.enums.Message;
@@ -29,7 +29,7 @@ public class GameStoreMenuService {
 
     public void list() {
         System.out.println(Message.ALL_GAME);
-        game.findAll().forEach(g -> System.out.println("Name: " + g.getName() + " " + "Release date: " + g.getRelease_date() + " " + "Rating: " + g.getRating() + " " + "Cost: " + g.getCost() + " " + "Description: " + g.getDescription()));
+        game.findAll().forEach(g -> System.out.println("Name: " + g.getName() + " " + "Release date: " + g.getReleaseDate() + " " + "Rating: " + g.getRating() + " " + "Cost: " + g.getCost() + " " + "Description: " + g.getDescription()));
     }
 
     public void buy() {
@@ -55,7 +55,7 @@ public class GameStoreMenuService {
             return;
         }
         // We make a request to purchase the game
-        if (this.game.buy(LocalStorageService.get().getId(), game.get().getId())) {
+        if (this.game.buy(LocalStorageService.get(), game.get()).isPresent()) {
             // Update the user's balance in local storage
             LocalStorageService.get()
                     .getAccount()

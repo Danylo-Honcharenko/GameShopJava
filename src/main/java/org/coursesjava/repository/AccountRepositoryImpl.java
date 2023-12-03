@@ -1,42 +1,40 @@
 package org.coursesjava.repository;
 
 import org.coursesjava.model.Account;
-import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.AccountRepository;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class AccountRepositoryImpl implements AccountRepository {
-    private final Connection connection;
+    private Connection connection;
 
     public AccountRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
 
-    private final String create =
+    private String create =
             """
-            INSERT INTO Accounts (type, user_id) VALUE (?, ?);
+            INSERT INTO Accounts (type, user_id) VALUES (?, ?);
             """;
 
-    private final String update =
+    private String update =
             """
             UPDATE Accounts SET amount = ? WHERE ID = ?;
             """;
 
-    private final String delete =
-            """
-            DELETE FROM Accounts WHERE ID = ?;
-            """;
-
     @Override
-    public int create(User user, String paymentSystem) {
-        int rowsChanged = 0;
-        try (PreparedStatement query = connection.prepareStatement(create, Statement.RETURN_GENERATED_KEYS)){
-            query.setString(1, paymentSystem);
-            query.setInt(2, user.getId());
+    public Optional<Account> create(Account account) {
+        Account accountResult = null;
+        try (PreparedStatement query = connection.prepareStatement(create, Statement.RETURN_GENERATED_KEYS)) {
+            query.setString(1, account.getCardType());
+            query.setInt(2, account.getUserId());
+            query.executeUpdate();
+            ResultSet generationKey = query.getGeneratedKeys();
+            generationKey.next();
+            account.setId(generationKey.getInt(1));
 
-            rowsChanged = query.executeUpdate();
-
+            accountResult = account;
         } catch (SQLException ex) {
             System.out.println("DB create error: " + ex.getMessage());
             try {
@@ -45,16 +43,19 @@ public class AccountRepositoryImpl implements AccountRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return rowsChanged;
+        return Optional.ofNullable(accountResult);
     }
 
     @Override
-    public int update(Account account, int amount) {
-        int rowsUpdate = 0;
+    public Optional<Account> update(Account account, int amount) {
+        Account accountUpdate = null;
         try (PreparedStatement query = connection.prepareStatement(update)) {
             query.setInt(1, amount);
             query.setInt(2, account.getId());
-            rowsUpdate = query.executeUpdate();
+            if (query.executeUpdate() > 0) {
+                account.setAmount(amount);
+                accountUpdate = account;
+            }
         } catch (SQLException ex) {
             System.out.println("DB create error: " + ex.getMessage());
             try {
@@ -63,18 +64,6 @@ public class AccountRepositoryImpl implements AccountRepository {
                 System.err.println("Close error: " + ex.getMessage());
             }
         }
-        return rowsUpdate;
-    }
-
-    @Override
-    public int remove(int ID) {
-        int rowsChanged = 0;
-        try (PreparedStatement query = connection.prepareStatement(delete)) {
-            query.setInt(1, ID);
-            rowsChanged = query.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println("DB remove entry error: " + ex.getMessage());
-        }
-        return rowsChanged;
+        return Optional.ofNullable(accountUpdate);
     }
 }

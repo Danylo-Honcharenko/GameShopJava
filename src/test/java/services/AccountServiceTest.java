@@ -1,11 +1,12 @@
 package services;
 
 import org.coursesjava.model.Account;
-import org.coursesjava.model.User;
 import org.coursesjava.services.AccountService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -14,36 +15,36 @@ public class AccountServiceTest {
 
     @Test
     public void create() {
-        User user = new User();
-        user.setId(5);
-        user.setName("Dima");
-        user.setNickname("Ethra");
-        user.setBirthday("2002-10-21");
-        user.setPassword("123456789");
-        user.setAccount(null);
 
-        Account account = new Account();
-        account.setId(1);
-        account.setAmount(0);
-        account.setUser_id(user.getId());
+        Account actual = new Account();
+        actual.setCardType("Mastercard");
+        actual.setUserId(1);
 
-        Mockito.when(accountService.create(any(User.class), eq("Visa")))
-                        .thenReturn(true);
-        Assert.assertTrue(accountService.create(user, "Visa"));
-        Mockito.when(accountService.create(any(User.class), eq("Mastercard")))
-                .thenReturn(true);
-        Assert.assertTrue(accountService.create(user, "Mastercard"));
+        Account expected = new Account();
+        expected.setCardType("Mastercard");
+        expected.setUserId(1);
+
+        Mockito.when(accountService.create(any(Account.class)))
+                        .thenReturn(Optional.of(actual));
+        Assert.assertTrue(accountService.create(actual).isPresent());
+        Assert.assertEquals(expected, accountService.create(actual).get());
     }
 
     @Test
     public void update() {
-        Account account = new Account();
-        account.setId(1);
-        account.setAmount(0);
-        account.setUser_id(0);
+        Account actual = new Account();
+        actual.setId(1);
+        actual.setAmount(100);
+        actual.setUserId(1);
+
+        Account expected = new Account();
+        expected.setId(1);
+        expected.setAmount(100);
+        expected.setUserId(1);
 
         Mockito.when(accountService.update(any(Account.class), anyInt()))
-                .thenReturn(true);
-        Assert.assertTrue(accountService.update(account, 100));
+                .thenReturn(Optional.of(actual));
+        Assert.assertTrue(accountService.update(actual, 100).isPresent());
+        Assert.assertEquals(expected, accountService.update(actual, 100).get());
     }
 }

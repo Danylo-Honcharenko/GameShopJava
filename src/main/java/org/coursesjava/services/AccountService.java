@@ -1,25 +1,19 @@
 package org.coursesjava.services;
 
 import org.coursesjava.model.Account;
-import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.AccountRepository;
 
+import java.util.Optional;
+
 public class AccountService {
-    private final AccountRepository account;
-
+    private final AccountRepository repository;
     public AccountService(AccountRepository account) {
-        this.account = account;
+        repository = account;
     }
-
-    public boolean create(User user, String paymentSystem) {
-        return this.account.create(user, paymentSystem) == 1;
+    public Optional<Account> create(Account account) {
+        return repository.create(account);
     }
-
-    public boolean update(Account account, int amount) {
-        return this.account.update(account, amount) > 0;
-    }
-
-    public boolean remove(final int ID) {
-        return account.remove(ID) > 0;
+    public Optional<Account> update(Account account, int amount) {
+        return repository.update(account, amount);
     }
 }

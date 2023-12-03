@@ -1,38 +1,30 @@
 package org.coursesjava.services;
 
 import org.coursesjava.model.Game;
+import org.coursesjava.model.User;
 import org.coursesjava.repository.dao.GameRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public class GameService {
-    private final GameRepository game;
+    private final GameRepository repository;
     public GameService(GameRepository game) {
-        this.game = game;
+        repository = game;
     }
-
-    public int create(Game game) {
-        this.game.create(game);
-        return 1;
-    }
-
     public Optional<Game> findByName(String name) {
-        return game.getByName(name);
+        return repository.getByName(name);
     }
-
     public List<Game> findAll() {
-        return game.getAll();
+        return repository.getAll();
     }
-
-    public Optional<Game> findById(int ID) {
-        return game.getById(ID);
+    public Optional<Game> findById(int id) {
+        return repository.getById(id);
     }
-
-    public boolean buy(int userID, int gameID) {
-        return game.buy(userID, gameID) == 1;
+    public Optional<Game> buy(User user, Game game) {
+        return repository.addGameToUser(user, game);
     }
-    public List<Game> userLib(int userID) {
-        return game.getUserGame(userID);
+    public List<Game> userLib(int userId) {
+        return repository.getUserGame(userId);
     }
 }

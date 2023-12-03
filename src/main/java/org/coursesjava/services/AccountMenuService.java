@@ -1,6 +1,6 @@
 package org.coursesjava.services;
 
-import org.coursesjava.ConnectionSingleton;
+import org.coursesjava.config.ConnectionSingleton;
 import org.coursesjava.enums.Error;
 import org.coursesjava.enums.Menu;
 import org.coursesjava.repository.AccountRepositoryImpl;
@@ -23,7 +23,7 @@ public class AccountMenuService {
 
     public void topUpAccount() {
         System.out.print(Menu.TOP_UP_ACCOUNT_Q);
-        int amount = Integer.parseInt(scanner.next());
+        int amount = scanner.nextInt();
         /**
          * from the local storage we get a copy of the current session user data,
          * get the amount and perform the sum operation on the new desired amount and current
@@ -32,7 +32,7 @@ public class AccountMenuService {
                 .getAccount()
                 .getAmount();
 
-        if (account.update(LocalStorageService.get().getAccount(), creditedAmount)) {
+        if (account.update(LocalStorageService.get().getAccount(), creditedAmount).isPresent()) {
             System.out.println("Your account has been successfully replenished with the amount " + creditedAmount + "$");
             // write the account change to local storage
             LocalStorageService.get()

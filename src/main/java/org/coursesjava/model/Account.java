@@ -6,6 +6,6 @@ import lombok.Data;
 public class Account {
     private int id;
     private int amount;
-    private String type;
-    private int user_id;
+    private String cardType;
+    private int userId;
 }

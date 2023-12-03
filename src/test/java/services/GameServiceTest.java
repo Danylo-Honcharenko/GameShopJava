@@ -18,14 +18,14 @@ public class GameServiceTest {
     private final GameService game = Mockito.mock(GameService.class);
 
     @Test
-    public void getByName() {
+    public void findByName() {
         Game expected = new Game();
         expected.setId(2);
         expected.setName("Gta 5");
         expected.setCost(500);
         expected.setRating(5);
         expected.setDescription("Test, test");
-        expected.setRelease_date(LocalDate.of(2013, 6, 12));
+        expected.setReleaseDate(LocalDate.of(2013, 6, 12));
 
         String gameName = "Gta 5";
 
@@ -49,7 +49,7 @@ public class GameServiceTest {
         gameFirst.setCost(300);
         gameFirst.setRating(4);
         gameFirst.setDescription("Test, test");
-        gameFirst.setRelease_date(LocalDate.of(2000, 8, 10));
+        gameFirst.setReleaseDate(LocalDate.of(2000, 8, 10));
 
         Game gameSecond = new Game();
         gameSecond.setId(2);
@@ -57,7 +57,7 @@ public class GameServiceTest {
         gameSecond.setCost(500);
         gameSecond.setRating(5);
         gameSecond.setDescription("Test, test");
-        gameSecond.setRelease_date(LocalDate.of(2013, 6, 12));
+        gameSecond.setReleaseDate(LocalDate.of(2013, 6, 12));
 
         Mockito.when(game.findAll())
                 .thenReturn(games);
@@ -72,7 +72,7 @@ public class GameServiceTest {
         expected.setCost(300);
         expected.setRating(4);
         expected.setDescription("Test, test");
-        expected.setRelease_date(LocalDate.of(2000, 8, 10));
+        expected.setReleaseDate(LocalDate.of(2000, 8, 10));
 
         Mockito.when(game.findById(anyInt()))
                 .thenReturn(Optional.of(expected));

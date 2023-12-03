@@ -9,7 +9,7 @@ import java.util.Date;
 public class Game {
     private int id;
     private String name;
-    private LocalDate release_date;
+    private LocalDate releaseDate;
     private int rating;
     private int cost;
     private String description;

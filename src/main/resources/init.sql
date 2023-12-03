@@ -15,7 +15,7 @@ CREATE TABLE Game (
     description VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Game_Ref (
+CREATE TABLE User_game (
     user_id INT NOT NULL REFERENCES Users (ID) ON UPDATE CASCADE ON DELETE CASCADE,
     game_id INT NOT NULL REFERENCES Game (ID) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -30,7 +30,7 @@ CREATE TABLE Accounts (
 SELECT * FROM Users AS U LEFT JOIN Accounts A ON U.ID = A.user_id WHERE U.name = 'Test' AND U.password = 123456789;
 
 SELECT U.name, password, nickname, birthday, G.name, release_date, rating, cost, description
-FROM Users AS U LEFT JOIN Game_Ref GR ON U.ID = GR.user_id JOIN Game G ON G.ID = GR.game_id WHERE U.ID = 1;
+FROM Users AS U LEFT JOIN User_game GR ON U.ID = GR.user_id JOIN Game G ON G.ID = GR.game_id WHERE U.ID = 1;
 
 # Test game data
 INSERT INTO Game (name, release_date, rating, cost, description)
